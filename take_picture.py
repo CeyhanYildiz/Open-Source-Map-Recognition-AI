@@ -1,7 +1,15 @@
 import cv2
 
-# Initialize the camera (0 is usually the default camera)
-cap = cv2.VideoCapture(0, cv2.CAP_GSTREAMER)
+# GStreamer pipeline for Jetson Nano camera
+gst_pipeline = (
+    "nvarguscamerasrc ! "
+    "video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)NV12, framerate=(fraction)30/1 ! "
+    "nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert ! "
+    "video/x-raw, format=(string)BGR ! appsink"
+)
+
+# Open the camera
+cap = cv2.VideoCapture(gst_pipeline, cv2.CAP_GSTREAMER)
 
 if not cap.isOpened():
     print("Cannot open camera")
