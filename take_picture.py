@@ -1,27 +1,19 @@
 import cv2
 
-# GStreamer pipeline for Jetson Nano camera
-gst_pipeline = (
-    "nvarguscamerasrc ! "
-    "video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)NV12, framerate=(fraction)30/1 ! "
-    "nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert ! "
-    "video/x-raw, format=(string)BGR ! appsink"
-)
-
-# Open the camera
-cap = cv2.VideoCapture(gst_pipeline, cv2.CAP_GSTREAMER)
+# Open the camera device
+cap = cv2.VideoCapture(0)  # /dev/video0
 
 if not cap.isOpened():
     print("Cannot open camera")
     exit()
 
-# Capture a frame
+# Capture a single frame
 ret, frame = cap.read()
 if ret:
-    cv2.imwrite('/home/pxl/photo.jpg', frame)
+    cv2.imwrite("/home/pxl/photo.jpg", frame)
     print("Photo captured!")
 else:
-    print("Failed to capture image")
+    print("Failed to capture frame")
 
 # Release the camera
 cap.release()
