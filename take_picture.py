@@ -1,22 +1,20 @@
-from picamera import PiCamera
-from time import sleep
+from picamera2 import Picamera2
+import time
 
 # Initialize the camera
-camera = PiCamera()
+picam2 = Picamera2()
 
-# Optional: set camera resolution
-camera.resolution = (1920, 1080)
-
-# Start the camera preview
-camera.start_preview()
-sleep(2)  # Allow the camera to adjust to lighting
+# Start the camera
+picam2.start()
+time.sleep(2)  # Allow camera to adjust
 
 # Capture an image
-camera.capture('/home/jetson/photo.jpg')
+image = picam2.capture_array()
+from PIL import Image
+im = Image.fromarray(image)
+im.save("/home/jetson/photo.jpg")
+
 print("Photo captured!")
 
-# Stop the preview
-camera.stop_preview()
-
-# Close the camera
-camera.close()
+# Stop the camera
+picam2.stop()
