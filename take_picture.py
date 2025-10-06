@@ -1,20 +1,20 @@
-from picamera2 import Picamera2
-import time
+import cv2
 
-# Initialize the camera
-picam2 = Picamera2()
+# Initialize the camera (0 is usually the default camera)
+cap = cv2.VideoCapture(0, cv2.CAP_GSTREAMER)
 
-# Start the camera
-picam2.start()
-time.sleep(2)  # Allow camera to adjust
+if not cap.isOpened():
+    print("Cannot open camera")
+    exit()
 
-# Capture an image
-image = picam2.capture_array()
-from PIL import Image
-im = Image.fromarray(image)
-im.save("/home/jetson/photo.jpg")
+# Capture a frame
+ret, frame = cap.read()
+if ret:
+    cv2.imwrite('/home/pxl/photo.jpg', frame)
+    print("Photo captured!")
+else:
+    print("Failed to capture image")
 
-print("Photo captured!")
-
-# Stop the camera
-picam2.stop()
+# Release the camera
+cap.release()
+cv2.destroyAllWindows()
